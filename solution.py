@@ -9,6 +9,27 @@ def solution(s):
     def letter_to_ord(list):
         int_corr_list = []
         for letter in list:
+            # ord returns the unicode value of the letter
+            # https://en.wikipedia.org/wiki/List_of_Unicode_characters
+            # ord(letter) == 32 when letter = ' ' (space)
+            if ord(letter) == 32:
+                # if letter is space, final value needs to be 000000
+                int_corr_list.append(0)
+                # continue stops the rest of the logic below and moves the for loop onto the next iteration
+                continue
+            # if condition checks if letter is capitalized
+            if ord(letter) < 91 and ord(letter) > 64:
+                # 32 is the int value of binary number{100000} 
+                # in braille notation capital mark is:
+                # 00
+                # 00
+                # 01
+                # in this algorithm, that value = 32
+                # we'll insert 32 into int_corr_list to insert a capitalization mark in the final braille
+                int_corr_list.append(32)
+                # then change the uppercase letter to lowercase
+                letter = letter.lower()
+                # and the for loop continues on, with the letter treated as lowercase
             unicode = ord(letter)-96
             pow2 = 1
             fin = False
@@ -59,12 +80,12 @@ def solution(s):
     list6 = add_leading_zeroes(list5)
     print(list6)
 
-    def reverse_str(list):
-        reversed_list = []
-        for str in list:
-            
+    # def reverse_str(list):
+    #     reversed_list = []
+    #     for str in list:
 
-solution('abcdefghijklmnopqrstuvwxyz')
+
+solution('A ab cdefghijklmnopqrstuvwxyz')
 
 # capital mark: 100000
 # space: 000000
