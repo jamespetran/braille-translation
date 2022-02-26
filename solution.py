@@ -1,104 +1,79 @@
-def solution(s):
-    # Your code here
-    def split(word):
-        return [char for char in word]
+class solution:
+    @staticmethod
+    def solution2(s):
+        # Your code here
 
-    list1 = split(s)
-    # print(list1)
+        # braille doesn't really "follow" unicode rules,
+        # but it does follow ASCII hex rules. Probably
+        # one of the simpler ways to do this is a dictionary lookup table
+        letter_to_braille = {
+            "a": "100000",
+            "b": "110000",
+            "c": "100100",
+            "d": "100110",
+            "e": "100010",
+            "f": "110100",
+            "g": "110110",
+            "h": "110010",
+            "i": "010100",
+            "j": "010110",
+            "k": "101000",
+            "l": "111000",
+            "m": "101100",
+            "n": "101110",
+            "o": "101010",
+            "p": "111100",
+            "q": "111110",
+            "r": "111010",
+            "s": "011100",
+            "t": "011110",
+            "u": "101001",
+            "v": "111001",
+            "w": "101101",
+            "x": "010111",
+            "y": "101111",
+            "z": "101011",
+            "CAP": "000001",
+            " ": "000000"
+        }
 
-    def letter_to_ord(list):
-        int_corr_list = []
-        for letter in list:
-            # ord returns the unicode value of the letter
-            # https://en.wikipedia.org/wiki/List_of_Unicode_characters
-            # ord(letter) == 32 when letter = ' ' (space)
-            if ord(letter) == 32:
-                # if letter is space, final value needs to be 000000
-                int_corr_list.append(0)
-                # continue stops the rest of the logic below and moves the for loop onto the next iteration
-                continue
-            # if condition checks if letter is capitalized
-            if ord(letter) < 91 and ord(letter) > 64:
-                # 32 is the int value of binary number{100000} 
-                # in braille notation capital mark is:
-                # 00
-                # 00
-                # 01
-                # in this algorithm, that value = 32
-                # we'll insert 32 into int_corr_list to insert a capitalization mark in the final braille
-                int_corr_list.append(32)
-                # then change the uppercase letter to lowercase
-                letter = letter.lower()
-                # and the for loop continues on, with the letter treated as lowercase
-            unicode = ord(letter)-96
-            pow2 = 1
-            fin = False
-            while fin == False: 
-                if unicode >= 2**pow2:
-                    # offset the unicode value by one, incrementing past the 2**x values
-                    unicode += 1
-                    # increase pow2 by 1 so it will be checked next loop
-                    pow2 += 1
-                else:
-                    fin = True
-            # add unicode value to list2
-            int_corr_list.append(unicode)
-            
-        return int_corr_list
+        # split word(s) into list of individual letters
+        def split(word):
+            return [char for char in word]
 
-    list2 = letter_to_ord(list1)
-    # print(list2)
+        list1 = split(s)
 
-    def dec_to_bin(list):
-        return [bin(dec) for dec in list]
+        def letter_to_ord(list):
+            # this function will translate letters in a list
+            # into braille values, inserting capitalization
+            # marks as necessary and correctly interpreting spaces
+            bin_list = []
+            for letter in list:
+                # ord returns the unicode value of the letter
+                # https://en.wikipedia.org/wiki/List_of_Unicode_characters
+                # ord(letter) == 32 when letter = ' ' (space)
+                if ord(letter) == 32:
+                    # if letter is space, final value needs to be 000000
+                    bin_list.append(letter_to_braille.get(" "))
+                    # continue stops the rest of the logic below and moves the for loop onto the next iteration
+                    continue
+                # if condition checks if letter is capitalized
+                if ord(letter) < 91 and ord(letter) > 64:
+                    # unicode values between 64 & 91 represent capital letters
+                    bin_list.append(letter_to_braille.get("CAP"))
+                    # then change the uppercase letter to lowercase
+                    letter = letter.lower()
+                    # the letter is now stored as lowercase
+                bin_list.append(letter_to_braille.get(letter))
 
-    list3 = dec_to_bin(list2)
+            return bin_list
 
-    # print(list3)
+        list2 = letter_to_ord(list1)
+        # print(list2)
 
-    def slice_0b(list):
-        return [num[2:] for num in list]
+        str = ''
 
-    list4 = slice_0b(list3)
-
-    # print(list4)
-
-    def bin_str_to_int(list):
-        return [int(str) for str in list]
-
-    list5 = bin_str_to_int(list4)
-    # print(list5)
-
-    def add_leading_zeroes(list):
-        leading_zero_list = []
-        for number in list:
-            number_str = str(number)
-            leading_zero_str = number_str.zfill(6)
-            leading_zero_list.append(leading_zero_str)
-        return leading_zero_list
-
-    list6 = add_leading_zeroes(list5)
-    print(list6)
-
-    # def reverse_str(list):
-    #     reversed_list = []
-    #     for str in list:
-
-
-solution('A ab cdefghijklmnopqrstuvwxyz')
-
-# capital mark: 100000
-# space: 000000
-# letters: a 000001 // 1
-# b 000011 // 3
-# c 000101 // 5
-# d 000110 // 6
-# e 000111 // 7
-# f 001001 // 9 it skips the power of 2s
-# g 001010 // 10
-# h 001011 // 11
-# i 001100 // 12
-# j 001101 // 13
-# k 001110 // 14
-# l 001111 // 15
-# m 010001 // 17
+        for braille_string in list2:
+            str += braille_string
+        # print(str)
+        return str
